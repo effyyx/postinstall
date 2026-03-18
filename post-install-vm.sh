@@ -182,16 +182,17 @@ fi
 # =============================================================================
 #  5. AUR packages
 # =============================================================================
+
 info "Installing AUR packages..."
 paru -S --noconfirm --needed --skipreview --noprovides \
   alass \
   faugus-launcher \
   icoextract \
-  impd-git \
   mecab-git \
   mecab-ipadic \
   mecab-ipadic-neologd-git \
-  mpdris \
+  impd-git \
+  mpdris-bin \
   mpdris2 \
   mpv-mpvacious \
   papirus-folders-git \
