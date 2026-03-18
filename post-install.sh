@@ -142,6 +142,13 @@ rustup default stable
 log "Rust stable installed."
 
 # =============================================================================
+#  3b. Cargo packages
+# =============================================================================
+info "Installing cargo packages..."
+cargo install bat eza fd-find ripgrep starship zoxide
+log "Cargo packages installed."
+
+# =============================================================================
 #  4. paru (AUR helper)
 # =============================================================================
 if command -v paru &>/dev/null; then
@@ -159,7 +166,7 @@ fi
 #  5. AUR packages
 # =============================================================================
 info "Installing AUR packages..."
-paru -S --noconfirm --needed \
+paru -S --noconfirm --needed --skipreview --noprovides \
   alass \
   anki-bin \
   faugus-launcher \
