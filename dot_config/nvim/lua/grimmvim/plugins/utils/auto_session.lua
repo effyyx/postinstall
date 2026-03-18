@@ -1,0 +1,38 @@
+return {
+  "rmagatti/auto-session",
+  lazy = false,
+  keys = {
+    { "<leader>qs", "<cmd>SessionSave<CR>",     desc = "Save session" },
+    { "<leader>qr", "<cmd>SessionRestore<CR>",  desc = "Restore session" },
+    { "<leader>qd", "<cmd>SessionDelete<CR>",   desc = "Delete session" },
+    { "<leader>qf", "<cmd>SessionSearch<CR>",   desc = "Find session" },
+    { "<leader>qt", "<cmd>SessionToggleAutoSave<CR>", desc = "Toggle autosave" },
+  },
+  opts = {
+    enabled                    = true,
+    root_dir                   = vim.fn.stdpath("data") .. "/sessions/",
+    auto_save                  = true,
+    auto_restore               = true,
+    auto_create                = true,
+    suppressed_dirs            = { "~/", "~/Projects", "~/Downloads", "/" },
+    allowed_dirs               = nil,
+    auto_restore_last_session  = false,
+    git_use_branch_name = true,
+    lazy_support               = true,
+    bypass_save_filetypes = {
+      "dashboard", "alpha", "starter", "neo-tree", "oil",
+    },
+    close_unsupported_windows  = true,
+    args_allow_single_directory = true,
+    args_allow_files_auto_save = false,
+    continue_restore_on_error  = false,
+    show_auto_restore_notif    = false,
+    cwd_change_handling        = false,
+    log_level                  = "error",
+    session_lens = {
+      load_on_setup    = true,
+      picker_opts      = { border = true },
+      previewer        = false,
+    },
+  },
+}

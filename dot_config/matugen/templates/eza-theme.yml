@@ -1,0 +1,101 @@
+colourful: false
+
+filekinds:
+  normal:       {foreground: "{{colors.on_surface_variant.default.hex}}"}
+  directory:    {foreground: "{{colors.primary.default.hex}}"}
+  symlink:      {foreground: "{{colors.tertiary.default.hex}}"}
+  pipe:         {foreground: "{{colors.outline.default.hex}}"}
+  block_device: {foreground: "{{colors.outline.default.hex}}"}
+  char_device:  {foreground: "{{colors.outline.default.hex}}"}
+  socket:       {foreground: "{{colors.outline.default.hex}}"}
+  special:      {foreground: "{{colors.secondary.default.hex}}"}
+  executable:   {foreground: "{{colors.tertiary.default.hex}}"}
+  mount_point:  {foreground: "{{colors.primary.default.hex}}"}
+
+perms:
+  user_read:          {foreground: "{{colors.outline.default.hex}}"}
+  user_write:         {foreground: "{{colors.secondary.default.hex}}"}
+  user_execute_file:  {foreground: "{{colors.tertiary.default.hex}}"}
+  user_execute_other: {foreground: "{{colors.tertiary.default.hex}}"}
+  group_read:         {foreground: "{{colors.outline.default.hex}}"}
+  group_write:        {foreground: "{{colors.secondary.default.hex}}"}
+  group_execute:      {foreground: "{{colors.tertiary.default.hex}}"}
+  other_read:         {foreground: "{{colors.outline.default.hex}}"}
+  other_write:        {foreground: "{{colors.secondary.default.hex}}"}
+  other_execute:      {foreground: "{{colors.tertiary.default.hex}}"}
+  special_user_file:  {foreground: "{{colors.primary.default.hex}}"}
+  special_other:      {foreground: "{{colors.outline.default.hex}}"}
+  attribute:          {foreground: "{{colors.secondary.default.hex}}"}
+
+size:
+  major:       {foreground: "{{colors.outline.default.hex}}"}
+  minor:       {foreground: "{{colors.outline.default.hex}}"}
+  number_byte: {foreground: "{{colors.on_surface_variant.default.hex}}"}
+  number_kilo: {foreground: "{{colors.secondary.default.hex}}"}
+  number_mega: {foreground: "{{colors.primary.default.hex}}"}
+  number_giga: {foreground: "{{colors.error.default.hex}}"}
+  number_huge: {foreground: "{{colors.error.default.hex}}"}
+  unit_byte:   {foreground: "{{colors.outline.default.hex}}"}
+  unit_kilo:   {foreground: "{{colors.outline.default.hex}}"}
+  unit_mega:   {foreground: "{{colors.outline.default.hex}}"}
+  unit_giga:   {foreground: "{{colors.outline.default.hex}}"}
+  unit_huge:   {foreground: "{{colors.outline.default.hex}}"}
+
+users:
+  user_you:    {foreground: "{{colors.primary.default.hex}}"}
+  user_root:   {foreground: "{{colors.error.default.hex}}"}
+  user_other:  {foreground: "{{colors.outline.default.hex}}"}
+  group_yours: {foreground: "{{colors.secondary.default.hex}}"}
+  group_other: {foreground: "{{colors.outline.default.hex}}"}
+  group_root:  {foreground: "{{colors.error.default.hex}}"}
+
+links:
+  normal:          {foreground: "{{colors.tertiary.default.hex}}"}
+  multi_link_file: {foreground: "{{colors.secondary.default.hex}}"}
+
+git:
+  new:        {foreground: "{{colors.tertiary.default.hex}}"}
+  modified:   {foreground: "{{colors.secondary.default.hex}}"}
+  deleted:    {foreground: "{{colors.error.default.hex}}"}
+  renamed:    {foreground: "{{colors.primary.default.hex}}"}
+  typechange: {foreground: "{{colors.secondary.default.hex}}"}
+  ignored:    {foreground: "{{colors.outline.default.hex}}"}
+  conflicted: {foreground: "{{colors.error.default.hex}}"}
+
+git_repo:
+  branch_main:  {foreground: "{{colors.primary.default.hex}}"}
+  branch_other: {foreground: "{{colors.secondary.default.hex}}"}
+  git_clean:    {foreground: "{{colors.outline.default.hex}}"}
+  git_dirty:    {foreground: "{{colors.tertiary.default.hex}}"}
+
+security_context:
+  colon: {foreground: "{{colors.outline.default.hex}}"}
+  user:  {foreground: "{{colors.outline.default.hex}}"}
+  role:  {foreground: "{{colors.outline.default.hex}}"}
+  typ:   {foreground: "{{colors.outline.default.hex}}"}
+  range: {foreground: "{{colors.outline.default.hex}}"}
+
+file_type:
+  image:      {foreground: "{{colors.tertiary.default.hex}}"}
+  video:      {foreground: "{{colors.primary.default.hex}}"}
+  music:      {foreground: "{{colors.secondary.default.hex}}"}
+  lossless:   {foreground: "{{colors.secondary.default.hex}}"}
+  crypto:     {foreground: "{{colors.error.default.hex}}"}
+  document:   {foreground: "{{colors.on_surface_variant.default.hex}}"}
+  compressed: {foreground: "{{colors.secondary.default.hex}}"}
+  temp:       {foreground: "{{colors.outline.default.hex}}"}
+  compiled:   {foreground: "{{colors.outline.default.hex}}"}
+  build:      {foreground: "{{colors.tertiary.default.hex}}"}
+  source:     {foreground: "{{colors.on_surface_variant.default.hex}}"}
+
+punctuation:          {foreground: "{{colors.outline.default.hex}}"}
+date:                 {foreground: "{{colors.outline.default.hex}}"}
+inode:                {foreground: "{{colors.outline.default.hex}}"}
+blocks:               {foreground: "{{colors.outline.default.hex}}"}
+header:               {foreground: "{{colors.primary.default.hex}}"}
+octal:                {foreground: "{{colors.outline.default.hex}}"}
+flags:                {foreground: "{{colors.outline.default.hex}}"}
+symlink_path:         {foreground: "{{colors.tertiary.default.hex}}"}
+control_char:         {foreground: "{{colors.outline.default.hex}}"}
+broken_symlink:       {foreground: "{{colors.error.default.hex}}"}
+broken_path_overlay:  {foreground: "{{colors.outline.default.hex}}"}

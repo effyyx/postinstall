@@ -1,0 +1,6 @@
+# This file contains fish universal variable definitions.
+# VERSION: 3.0
+SETUVAR __fish_initialized:4300
+SETUVAR fish_color_command:brblue
+SETUVAR fish_greeting:\x1d
+SETUVAR fish_user_paths:/home/nemui/\x2ecargo/bin

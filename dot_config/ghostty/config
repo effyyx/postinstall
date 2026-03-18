@@ -1,0 +1,45 @@
+#General
+shell-integration = fish
+confirm-close-surface = false
+quit-after-last-window-closed = false
+resize-overlay = never
+
+#Fonts
+font-family = yumin
+font-size = 12
+
+#Clipboard
+clipboard-read = allow
+clipboard-write = allow
+
+background = 141218
+foreground = e7e0e8
+cursor-color = d2bcfd
+cursor-text = 38265c
+selection-background = 4f3d74
+selection-foreground = eaddff
+
+# black / bright black
+palette = 0=141218
+palette = 8=3b383e
+# red / bright red
+palette = 1=ffb4ab
+palette = 9=93000a
+# green / bright green (tertiary)
+palette = 2=f0b7c6
+palette = 10=643b46
+# yellow / bright yellow (secondary)
+palette = 3=cdc2db
+palette = 11=e9def8
+# blue / bright blue (primary container)
+palette = 4=4f3d74
+palette = 12=d2bcfd
+# magenta / bright magenta
+palette = 5=67548e
+palette = 13=d2bcfd
+# cyan / bright cyan
+palette = 6=f0b7c6
+palette = 14=ffd9e1
+# white / bright white
+palette = 7=cbc4cf
+palette = 15=e7e0e8

@@ -1,0 +1,77 @@
+@define-color background #{{colors.surface.default.hex_stripped}};
+@define-color foreground #{{colors.primary.default.hex_stripped}};
+@define-color system #{{colors.secondary.default.hex_stripped}};
+@define-color modules #{{colors.outline.default.hex_stripped}};
+@define-color traybg #{{colors.surface.default.hex_stripped}};
+@define-color texts #{{colors.outline_variant.default.hex_stripped}};
+@define-color green #{{colors.tertiary.default.hex_stripped}};
+
+
+
+* {
+  background: @background;
+  border: none;
+  border-radius: 0;
+  font-family: Hiragino Sans;
+  font-size: 16px;
+  min-height: 0;
+}
+
+
+window#waybar {
+  background: @background;
+  font-family: Hiragino Sans;
+  color: @foreground;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+
+#workspaces {
+  color: @foreground;
+  font-family: Hiragino Sans;
+  background-color: @traybg;
+  padding: 0 12px;
+  margin: 4px 4px 4px 4px;
+  border-radius: 75px;
+  background-clip: padding-box;
+  border-top: 0px solid @traybg;
+  border-bottom: 0px solid @traybg;
+}
+
+
+#workspaces button {
+  padding: 0px 5px;
+  font-family: Hiragino Sans;
+  background: @traybg;
+  color: @foreground;
+  border-top: 0px solid @traybg;
+  border-bottom: 0px solid @traybg;
+}
+
+#workspaces button.active {
+  font-family: Hiragino Sans;
+  border-bottom: 1px solid @foreground;
+  border-top: 0px solid @traybg;
+  background: @traybg;
+  font-family: Hiragino Sans;
+
+}
+
+#workspaces button.urgent {
+  border-bottom: 3px solid @foreground;
+  border-top: 0px solid;
+  background: @traybg;
+  font-family: Hiragino Sans;
+}
+
+#clock, #disk, #tray {
+  color: @foreground;
+  font-family: Hiragino Sans;
+  padding: 0 6px;
+  margin: 4px 2px;
+  background: @traybg;
+  border-radius: 90px;
+  border-top: 1px solid @traybg;
+  border-bottom: 1px solid @traybg;
+}

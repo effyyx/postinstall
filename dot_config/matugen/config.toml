@@ -1,0 +1,53 @@
+[config]
+reload_apps = true
+set_wallpaper = false
+reload_gtk_theme = true
+
+[templates.gtk3]
+input_path = '~/.config/matugen/templates/gtk-colors.css'
+output_path = '~/.config/gtk-3.0/colors.css'
+
+[templates.gtk4]
+input_path = '~/.config/matugen/templates/gtk-colors.css'
+output_path = '~/.config/gtk-4.0/colors.css'
+
+[templates.waybar]
+input_path = "~/.config/matugen/templates/waybar.css"
+output_path = "~/.config/waybar/style.css"
+
+[templates.mako]
+input_path = "~/.config/matugen/templates/mako.config"
+output_path = "~/.config/mako/config"
+
+[templates.yazi]
+input_path = "~/.config/matugen/templates/yazi.toml"
+output_path = "~/.config/yazi/flavors/matugen.yazi/flavor.toml"
+
+[templates.btop]
+input_path = "~/.config/matugen/templates/btop.theme"
+output_path = "~/.config/btop/themes/matugen.theme"
+
+[templates.rmpc]
+input_path = "~/.config/matugen/templates/nemui.ron"
+output_path = "~/.config/rmpc/nemui.ron"
+
+[templates.rmpc_colors]
+input_path = "~/.config/matugen/templates/rmpc.ron"
+output_path = "~/.config/rmpc/config.ron"
+
+[templates.hyprland]
+input_path = "~/.config/matugen/templates/hyprland-colors.conf"
+output_path = "~/.config/hypr/colors.conf"
+
+[templates.eza]
+input_path = "~/.config/matugen/templates/eza-theme.yml"
+output_path = "~/.config/eza/theme.yml"
+
+[templates.mfpbar]
+input_path = "~/.config/matugen/templates/mfbar_color.conf"
+output_path = "~/.config/mpv/script-opts/mfpbar.conf"
+
+[templates.ghostty]
+input_path = '~/.config/matugen/templates/ghostty-colors'
+output_path = '~/.config/ghostty/config'
+post_hook = 'pkill -USR2 ghostty'

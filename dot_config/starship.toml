@@ -1,0 +1,53 @@
+format = """
+$directory\
+$git_branch\
+$git_state\
+$cmd_duration\
+$line_break\
+$python\
+$character"""
+add_newline = false
+
+[line_break]
+disabled = false
+
+[directory]
+style = "white"
+
+[character]
+success_symbol = "[└─](bright-blue)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](yellow)"
+
+[git_branch]
+format = "[$branch]($style)"
+style = "white"
+
+[git_status]
+format = " ($ahead_behind$stashed)]($style)"
+style = "white"
+conflicted = ""
+untracked = ""
+modified = ""
+staged = ""
+renamed = ""
+deleted = ""
+stashed = "≡"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "white"
+
+[cmd_duration]
+format = "[$duration]($style) "
+style = "bright-black"
+
+[python]
+format = "[$virtualenv]($style) "
+style = "white"
+
+[hostname]
+format = "[$hostname](green)"
+
+[username]
+format = "[$username](green)"

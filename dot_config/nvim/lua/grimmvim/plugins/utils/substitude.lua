@@ -1,0 +1,2 @@
+-- substitute.nvim is configured in comment.lua alongside other small utils
+return {}
