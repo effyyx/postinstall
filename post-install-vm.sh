@@ -157,9 +157,19 @@ paru -S --noconfirm --needed --skipreview --noprovides \
   mpv-mpvacious \
   papirus-folders-git \
   patool \
-  sddm-sugar-dark \
   vesktop
 log "AUR packages installed."
+
+info "Installing SilentSDDM theme..."
+_sddm_tmp=$(mktemp -d)
+git clone -b main --depth=1 https://github.com/uiriansan/SilentSDDM "$_sddm_tmp/SilentSDDM"
+(cd "$_sddm_tmp/SilentSDDM" && ./install.sh)
+rm -rf "$_sddm_tmp"
+info "Configuring SilentSDDM to use rei.conf..."
+SDDM_META="/usr/share/sddm/themes/silent/metadata.desktop"
+sudo sed -i "s|^ConfigFile=configs/default.conf|# ConfigFile=configs/default.conf|" "$SDDM_META"
+sudo sed -i "s|^# ConfigFile=configs/rei.conf|ConfigFile=configs/rei.conf|" "$SDDM_META"
+log "SilentSDDM installed with rei.conf."
 sleep 1
 
 # =============================================================================
