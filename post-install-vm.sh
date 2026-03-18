@@ -31,6 +31,13 @@ command -v pacman &>/dev/null || die "This script is for Arch Linux only."
 CHEZMOI_REPO="https://github.com/effyyx/postinstall"
 CHEZMOI_BRANCH="main"
 
+# ── Prerequisites ─────────────────────────────────────────────────────────────
+# Before running this script, make sure you enabled multilib in archinstall!
+# archinstall → Additional repositories → multilib
+
+# ── Timer start ──────────────────────────────────────────────────────────────
+START_TIME=$SECONDS
+
 # ── Header ────────────────────────────────────────────────────────────────────
 echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo -e "  ${BOLD}Arch Post-Install — nemui setup${RESET}"
@@ -39,16 +46,11 @@ echo -e "  Hyprland · Quickshell · fish · chezmoi [VM mode — no NVIDIA]\n"
 sleep 2
 
 # =============================================================================
-#  1. Multilib + system update
+#  1. System update
 # =============================================================================
-step 1 "Enabling multilib + system update"
-if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
-  warn "Enabling [multilib] in /etc/pacman.conf..."
-  sudo sed -i '/^#\[multilib\]/{N; s/#\[multilib\]\n#Include/[multilib]\nInclude/}' /etc/pacman.conf
-fi
-sudo pacman -Sy --noconfirm
+
 sudo pacman -Syu --noconfirm
-log "System updated, multilib enabled."
+log "System updated."
 sleep 1
 
 # =============================================================================
@@ -330,3 +332,8 @@ echo -e "  • Run ${BOLD}papirus-folders${RESET} to tint Papirus icons to your 
 echo -e "  • Steam → Settings → Compatibility → enable Proton for all titles"
 echo -e "  • ${BOLD}paru-debug${RESET} not auto-installed — add manually if needed:"
 echo -e "      paru -S paru-debug\n"
+
+_elapsed=$(( SECONDS - START_TIME ))
+_mins=$(( _elapsed / 60 ))
+_secs=$(( _elapsed % 60 ))
+echo -e "  ${CYAN}Total time: ${BOLD}${_mins}m ${_secs}s${RESET}\n"
