@@ -21,7 +21,7 @@ die()  { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
 command -v pacman &>/dev/null || die "This script is for Arch Linux only."
 
 # ── Config — edit before running ─────────────────────────────────────────────
-CHEZMOI_REPO=""        # e.g. https://github.com/yourname/dotfiles
+CHEZMOI_REPO="https://github.com/effyyx/postinstall"
 CHEZMOI_BRANCH="main"
 
 # ── Prompt for chezmoi repo if not hardcoded ──────────────────────────────────
