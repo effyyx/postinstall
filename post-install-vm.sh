@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  Arch Linux Post-Install Setup Script
+#  Arch Linux Post-Install Setup Script — VM VERSION (no NVIDIA)
 #  Target: Minimal archinstall base → Hyprland + Quickshell + fish + chezmoi
-#  Packages sourced from explicit-packages.txt + aur-packages.txt
+#  NOTE: Enable multilib in archinstall before running this script!
+#        archinstall → Additional repositories → multilib
 # =============================================================================
 
 set -euo pipefail
@@ -11,10 +12,10 @@ set -euo pipefail
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
 
-log()    { echo -e "${GREEN}[✔]${RESET} $*"; }
-info()   { echo -e "${CYAN}[→]${RESET} $*"; }
-warn()   { echo -e "${YELLOW}[!]${RESET} $*"; }
-die()    { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
+log()  { echo -e "${GREEN}[✔]${RESET} $*"; }
+info() { echo -e "${CYAN}[→]${RESET} $*"; }
+warn() { echo -e "${YELLOW}[!]${RESET} $*"; }
+die()  { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
 
 step() {
   local num="$1"; local title="$2"; local total=11
@@ -31,24 +32,20 @@ command -v pacman &>/dev/null || die "This script is for Arch Linux only."
 CHEZMOI_REPO="https://github.com/effyyx/postinstall"
 CHEZMOI_BRANCH="main"
 
-# ── Prerequisites ─────────────────────────────────────────────────────────────
-# Before running this script, make sure you enabled multilib in archinstall!
-# archinstall → Additional repositories → multilib
-
-# ── Timer start ──────────────────────────────────────────────────────────────
+# ── Timer ─────────────────────────────────────────────────────────────────────
 START_TIME=$SECONDS
 
 # ── Header ────────────────────────────────────────────────────────────────────
 echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "  ${BOLD}Arch Post-Install — nemui setup${RESET}"
+echo -e "  ${BOLD}Arch Post-Install — nemui setup [VM mode]${RESET}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
-echo -e "  Hyprland · Quickshell · fish · chezmoi [VM mode — no NVIDIA]\n"
+echo -e "  Hyprland · Quickshell · fish · chezmoi\n"
 sleep 2
 
 # =============================================================================
 #  1. System update
 # =============================================================================
-
+step 1 "System update"
 sudo pacman -Syu --noconfirm
 log "System updated."
 sleep 1
@@ -57,29 +54,21 @@ sleep 1
 #  2. pacman packages
 # =============================================================================
 step 2 "Installing pacman packages (this will take a while)"
-info "Base, shell, CLI tools, Hyprland, audio, gaming, NVIDIA..."
+info "Base, shell, CLI tools, Hyprland, audio, gaming..."
 sudo pacman -S --noconfirm --needed \
-  \
   base-devel git wget \
   btrfs-progs efibootmgr os-prober \
   intel-ucode \
   linux-firmware \
   rustup nodejs python-pip python-pipx luarocks \
-  \
   fish ghostty \
-  fzf \
-  fastfetch \
-  \
+  fzf fastfetch \
   bottom ncdu smartmontools \
-  ouch \
-  socat \
+  ouch socat \
   imagemagick ffmpegthumbnailer mediainfo \
   poppler tesseract tesseract-data-jpn \
-  yazi \
-  eva \
-  rmpc mpc mpd \
-  playerctl \
-  \
+  yazi eva \
+  rmpc mpc mpd playerctl \
   hyprland \
   hypridle hyprlock hyprpicker \
   hyprpolkitagent \
@@ -88,55 +77,31 @@ sudo pacman -S --noconfirm --needed \
   wl-clipboard wlr-randr \
   xdg-user-dirs xdg-utils \
   gvfs udiskie \
-  polkit-gnome \
-  nwg-look \
+  polkit-gnome nwg-look \
   qt5-wayland qt6-wayland \
-  \
-  sddm \
-  quickshell \
-  \
+  sddm quickshell \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack \
-  gst-plugin-pipewire \
-  wireplumber \
+  gst-plugin-pipewire wireplumber \
   libpulse pavucontrol \
-  \
-  networkmanager \
-  avahi \
-  \
+  networkmanager avahi \
   ttf-jetbrains-mono-nerd \
-  \
-  adw-gtk-theme papirus-icon-theme \
-  matugen \
-  \
+  adw-gtk-theme papirus-icon-theme matugen \
   thunar thunar-archive-plugin thunar-media-tags-plugin \
   thunar-shares-plugin thunar-volman \
-  \
-  firefox \
-  anki \
-  mpv imv \
-  filezilla \
-  \
+  firefox anki mpv imv filezilla \
   fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-mozc fcitx5-qt \
-  \
-  flatpak \
-  fuse2 fuse2fs \
-  \
+  flatpak fuse2 fuse2fs \
   steam lutris \
   mangohud lib32-mangohud \
   gamemode lib32-gamemode \
   protontricks winetricks \
   vulkan-icd-loader lib32-vulkan-icd-loader \
-  \
-
-
-  \
   lib32-giflib lib32-gnutls lib32-gtk3 \
   lib32-libjpeg-turbo lib32-libpulse \
   lib32-libxcomposite lib32-libxslt \
   lib32-mpg123 lib32-ocl-icd lib32-openal \
   lib32-v4l-utils \
   lib32-gst-plugins-base-libs lib32-gst-plugins-good \
-  \
   sof-firmware
 
 log "pacman packages installed."
@@ -323,6 +288,10 @@ log "XDG user directories created."
 # =============================================================================
 #  Done
 # =============================================================================
+_elapsed=$(( SECONDS - START_TIME ))
+_mins=$(( _elapsed / 60 ))
+_secs=$(( _elapsed % 60 ))
+
 echo -e "\n${BOLD}${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo -e "  ${BOLD}All done! Reboot when ready. 🎉${RESET}"
 echo -e "${BOLD}${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
@@ -332,8 +301,4 @@ echo -e "  • Run ${BOLD}papirus-folders${RESET} to tint Papirus icons to your 
 echo -e "  • Steam → Settings → Compatibility → enable Proton for all titles"
 echo -e "  • ${BOLD}paru-debug${RESET} not auto-installed — add manually if needed:"
 echo -e "      paru -S paru-debug\n"
-
-_elapsed=$(( SECONDS - START_TIME ))
-_mins=$(( _elapsed / 60 ))
-_secs=$(( _elapsed % 60 ))
 echo -e "  ${CYAN}Total time: ${BOLD}${_mins}m ${_secs}s${RESET}\n"
