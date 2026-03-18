@@ -257,6 +257,14 @@ if [[ "$_apply" =~ ^[Yy]$ ]]; then
   chezmoi apply
   fc-cache -fv
   log "Dotfiles applied, font cache refreshed."
+
+  info "Setting up SDDM face icon..."
+  if [[ -f "$HOME/Pictures/face.icon.jpeg" ]]; then
+    sudo convert "$HOME/Pictures/face.icon.jpeg" "/usr/share/sddm/faces/nemui.png"
+    log "SDDM face icon set."
+  else
+    warn "face.icon.jpeg not found in ~/Pictures, skipping."
+  fi
 else
   warn "Skipped — run 'chezmoi apply' whenever you're ready."
 fi
@@ -323,6 +331,9 @@ echo -e "  ${CYAN}Post-reboot checklist:${RESET}"
 echo -e "  • Open ${BOLD}fcitx5-configtool${RESET} → add Mozc as input method"
 echo -e "  • Run ${BOLD}papirus-folders${RESET} to tint Papirus icons to your colour"
 echo -e "  • Steam → Settings → Compatibility → enable Proton for all titles"
+echo -e "  • Install ${BOLD}Anki addons${RESET} (AnkiConnect, Yomichan Forward, etc.)"
+echo -e "  • Set up ${BOLD}Lutris${RESET} for visual novels (Wine/Proton, Japanese locale)"
+echo -e "  • Install ${BOLD}Yomitan${RESET} extension in Firefox and configure dictionaries"
 echo -e "  • ${BOLD}paru-debug${RESET} not auto-installed — add manually if needed:"
 echo -e "      paru -S paru-debug\n"
 echo -e "  ${CYAN}Total time: ${BOLD}${_mins}m ${_secs}s${RESET}\n"
