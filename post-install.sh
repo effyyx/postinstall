@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  Arch Linux Post-Install Setup Script — VM VERSION (no NVIDIA)
+#  Arch Linux Post-Install Setup Script
 #  Target: Minimal archinstall base → Hyprland + Quickshell + fish + chezmoi
-#  NOTE: Enable multilib in archinstall before running this script!
+#  NOTE: Enable multilib in archinstall before running!
 #        archinstall → Additional repositories → multilib
 # =============================================================================
 
 set -euo pipefail
 
-# ── Colors ────────────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
 
@@ -24,28 +23,24 @@ step() {
   echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
 }
 
-# ── Sanity checks ─────────────────────────────────────────────────────────────
 [[ $EUID -eq 0 ]] && die "Do NOT run as root. Run as your regular user (with sudo access)."
 command -v pacman &>/dev/null || die "This script is for Arch Linux only."
 
-# ── Config ────────────────────────────────────────────────────────────────────
 CHEZMOI_REPO="https://github.com/effyyx/postinstall"
 CHEZMOI_BRANCH="main"
-
-# ── Timer ─────────────────────────────────────────────────────────────────────
 START_TIME=$SECONDS
 
-# ── Header ────────────────────────────────────────────────────────────────────
 echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "  ${BOLD}Arch Post-Install — nemui setup ${RESET}"
+echo -e "  ${BOLD}Arch Post-Install — nemui setup${RESET}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
-echo -e "  Hyprland · Quickshell · fish · chezmoi\n"
+echo -e "  Hyprland · Quickshell · fish · chezmoi · NVIDIA\n"
 sleep 2
 
 # =============================================================================
 #  1. System update
 # =============================================================================
 step 1 "System update"
+sudo pacman -Sy --noconfirm
 sudo pacman -Syu --noconfirm
 log "System updated."
 sleep 1
@@ -54,7 +49,7 @@ sleep 1
 #  2. pacman packages
 # =============================================================================
 step 2 "Installing pacman packages (this will take a while)"
-info "Base, shell, CLI tools, Hyprland, audio, gaming..."
+info "Base, shell, CLI tools, Hyprland, audio, gaming, NVIDIA..."
 sudo pacman -S --noconfirm --needed \
   base-devel git wget \
   btrfs-progs efibootmgr os-prober \
@@ -105,7 +100,6 @@ sudo pacman -S --noconfirm --needed \
   lib32-v4l-utils \
   lib32-gst-plugins-base-libs lib32-gst-plugins-good \
   sof-firmware
-
 log "pacman packages installed."
 sleep 1
 
@@ -116,7 +110,6 @@ step 3 "Setting up Rust + cargo packages"
 info "Installing Rust stable toolchain..."
 rustup default stable
 log "Rust stable installed."
-
 info "Compiling cargo packages (bat, eza, fd, ripgrep, starship, zoxide)..."
 info "This will take several minutes — go grab a coffee ☕"
 cargo install bat eza fd-find ripgrep starship zoxide
@@ -137,8 +130,7 @@ else
   rm -rf "$_paru_tmp"
   log "paru installed."
 fi
-
-info "Configuring paru (disabling provider prompts)..."
+info "Configuring paru..."
 sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
 mkdir -p "$HOME/.config/paru"
 cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
@@ -169,7 +161,6 @@ paru -S --noconfirm --needed --skipreview --noprovides \
   patool \
   sddm-sugar-dark \
   vesktop
-
 log "AUR packages installed."
 sleep 1
 
@@ -190,7 +181,7 @@ fi
 sleep 1
 
 # =============================================================================
-#  7. Config files (fcitx5 + Elgato Wave 3)
+#  7. Config files
 # =============================================================================
 step 7 "Writing config files"
 
@@ -235,7 +226,6 @@ info "Adding Flathub remote..."
 flatpak remote-add --if-not-exists flathub \
   https://dl.flathub.org/repo/flathub.flatpakrepo
 log "Flathub remote added."
-
 info "Installing Unity Hub..."
 flatpak install --system --noninteractive flathub com.unity.UnityHub
 info "Installing WiVRn server..."
@@ -248,13 +238,10 @@ sleep 1
 # =============================================================================
 step 9 "Applying dotfiles via chezmoi"
 sudo pacman -S --noconfirm --needed chezmoi
-
 info "Initialising chezmoi from: $CHEZMOI_REPO (branch: $CHEZMOI_BRANCH)"
 chezmoi init --branch "$CHEZMOI_BRANCH" "$CHEZMOI_REPO"
-
 echo -e "\n${YELLOW}[?]${RESET} Preview of changes chezmoi will apply:"
 chezmoi diff || true
-
 read -rp $'\nApply dotfiles now? [y/N] ' _apply
 if [[ "$_apply" =~ ^[Yy]$ ]]; then
   chezmoi apply
@@ -274,22 +261,18 @@ sudo systemctl enable NetworkManager-dispatcher
 sudo systemctl enable sddm
 sudo systemctl enable systemd-timesyncd
 log "System services enabled."
-
 info "Enabling user services (pipewire, wireplumber)..."
 systemctl --user enable pipewire pipewire-pulse wireplumber
 log "User audio services enabled."
 sleep 1
 
 # =============================================================================
-#  11. XDG user dirs
+#  11. Finalising
 # =============================================================================
 step 11 "Finalising"
 xdg-user-dirs-update
 log "XDG user directories created."
 
-# =============================================================================
-#  Done
-# =============================================================================
 _elapsed=$(( SECONDS - START_TIME ))
 _mins=$(( _elapsed / 60 ))
 _secs=$(( _elapsed % 60 ))
