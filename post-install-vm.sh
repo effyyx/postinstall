@@ -120,9 +120,6 @@ sudo pacman -S --noconfirm --needed \
   protontricks winetricks \
   vulkan-icd-loader lib32-vulkan-icd-loader \
   \
-  # ── NVIDIA (commented out for VM) ──────────────────────────────────────────
-  # nvidia-open nvidia-utils nvidia-settings \
-  # lib32-nvidia-utils \
   \
   lib32-giflib lib32-gnutls lib32-gtk3 \
   lib32-libjpeg-turbo lib32-libpulse \
