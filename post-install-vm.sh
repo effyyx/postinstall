@@ -17,7 +17,7 @@ warn() { echo -e "${YELLOW}[!]${RESET} $*"; }
 die()  { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
 
 step() {
-  local num="$1"; local title="$2"; local total=11
+  local num="$1"; local title="$2"; local total=12
   echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
   echo -e "  ${BOLD}[${num}/${total}] ${title}${RESET}"
   echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
@@ -267,7 +267,36 @@ sleep 1
 # =============================================================================
 #  11. Finalising
 # =============================================================================
-step 11 "Finalising"
+# =============================================================================
+#  11. Cleanup
+# =============================================================================
+step 11 "Cleaning up"
+
+info "Clearing pacman package cache..."
+sudo pacman -Sc --noconfirm
+log "Pacman cache cleared."
+
+info "Clearing paru/AUR build cache..."
+rm -rf "$HOME/.cache/paru/clone"
+log "AUR build cache cleared."
+
+info "Clearing cargo registry cache..."
+rm -rf "$HOME/.cargo/registry/cache"
+log "Cargo registry cache cleared."
+
+info "Removing orphaned packages..."
+mapfile -t _orphans < <(pacman -Qdtq 2>/dev/null)
+if [[ ${#_orphans[@]} -gt 0 ]]; then
+  sudo pacman -Rns --noconfirm "${_orphans[@]}"
+  log "Orphaned packages removed."
+else
+  warn "No orphaned packages found."
+fi
+sleep 1
+
+# =============================================================================
+#  12. Finalising
+step 12 "Finalising"
 xdg-user-dirs-update
 log "XDG user directories created."
 
