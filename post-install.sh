@@ -44,6 +44,7 @@ if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
   warn "Enabling [multilib] in /etc/pacman.conf..."
   sudo sed -i '/^#\[multilib\]/{N; s/#\[multilib\]\n#Include/[multilib]\nInclude/}' /etc/pacman.conf
 fi
+sudo pacman -Sy --noconfirm
 sudo pacman -Syu --noconfirm
 log "System updated, multilib enabled."
 
