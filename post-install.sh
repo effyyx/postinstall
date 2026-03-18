@@ -11,35 +11,37 @@ set -euo pipefail
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
 
-log()  { echo -e "${GREEN}[✔]${RESET} $*"; }
-info() { echo -e "${CYAN}[→]${RESET} $*"; }
-warn() { echo -e "${YELLOW}[!]${RESET} $*"; }
-die()  { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
+log()    { echo -e "${GREEN}[✔]${RESET} $*"; }
+info()   { echo -e "${CYAN}[→]${RESET} $*"; }
+warn()   { echo -e "${YELLOW}[!]${RESET} $*"; }
+die()    { echo -e "${RED}[✘]${RESET} $*"; exit 1; }
+
+step() {
+  local num="$1"; local title="$2"; local total=11
+  echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+  echo -e "  ${BOLD}[${num}/${total}] ${title}${RESET}"
+  echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
+}
 
 # ── Sanity checks ─────────────────────────────────────────────────────────────
 [[ $EUID -eq 0 ]] && die "Do NOT run as root. Run as your regular user (with sudo access)."
 command -v pacman &>/dev/null || die "This script is for Arch Linux only."
 
-# ── Config — edit before running ─────────────────────────────────────────────
+# ── Config ────────────────────────────────────────────────────────────────────
 CHEZMOI_REPO="https://github.com/effyyx/postinstall"
 CHEZMOI_BRANCH="main"
 
-# ── Prompt for chezmoi repo if not hardcoded ──────────────────────────────────
-if [[ -z "$CHEZMOI_REPO" ]]; then
-  echo -e "\n${BOLD}Enter your chezmoi dotfiles GitHub repo URL${RESET}"
-  echo -e "  ${CYAN}e.g. https://github.com/yourname/dotfiles${RESET}"
-  echo -e "  Leave blank to install chezmoi without initialising.\n"
-  read -rp "Repo URL: " CHEZMOI_REPO
-fi
-
+# ── Header ────────────────────────────────────────────────────────────────────
 echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "  ${BOLD}Arch Post-Install — starting setup${RESET}"
+echo -e "  ${BOLD}Arch Post-Install — nemui setup${RESET}"
 echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
+echo -e "  Hyprland · Quickshell · fish · chezmoi · NVIDIA\n"
+sleep 2
 
 # =============================================================================
-#  1. Enable multilib + system update
+#  1. Multilib + system update
 # =============================================================================
-info "Checking multilib repo..."
+step 1 "Enabling multilib + system update"
 if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
   warn "Enabling [multilib] in /etc/pacman.conf..."
   sudo sed -i '/^#\[multilib\]/{N; s/#\[multilib\]\n#Include/[multilib]\nInclude/}' /etc/pacman.conf
@@ -47,11 +49,13 @@ fi
 sudo pacman -Sy --noconfirm
 sudo pacman -Syu --noconfirm
 log "System updated, multilib enabled."
+sleep 1
 
 # =============================================================================
 #  2. pacman packages
 # =============================================================================
-info "Installing pacman packages..."
+step 2 "Installing pacman packages (this will take a while)"
+info "Base, shell, CLI tools, Hyprland, audio, gaming, NVIDIA..."
 sudo pacman -S --noconfirm --needed \
   \
   base-devel git wget \
@@ -134,35 +138,28 @@ sudo pacman -S --noconfirm --needed \
   sof-firmware
 
 log "pacman packages installed."
+sleep 1
 
 # =============================================================================
-#  3. Rust stable toolchain
+#  3. Rust + cargo packages
 # =============================================================================
-info "Setting up Rust stable via rustup..."
+step 3 "Setting up Rust + cargo packages"
+info "Installing Rust stable toolchain..."
 rustup default stable
 log "Rust stable installed."
 
-# =============================================================================
-#  3b. Cargo packages
-# =============================================================================
-info "Installing cargo packages..."
+info "Compiling cargo packages (bat, eza, fd, ripgrep, starship, zoxide)..."
+info "This will take several minutes — go grab a coffee ☕"
 cargo install bat eza fd-find ripgrep starship zoxide
 log "Cargo packages installed."
+sleep 1
 
 # =============================================================================
 #  4. paru (AUR helper)
 # =============================================================================
+step 4 "Setting up paru (AUR helper)"
 if command -v paru &>/dev/null; then
   warn "paru already installed, skipping build."
-
-# Disable Provides in system paru.conf and write user config
-sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
-  mkdir -p "$HOME/.config/paru"
-cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
-[options]
-SkipReview
-Provides = no
-PARUCONF
 else
   info "Building paru from AUR..."
   _paru_tmp=$(mktemp -d)
@@ -170,30 +167,32 @@ else
   (cd "$_paru_tmp/paru" && makepkg -si --noconfirm)
   rm -rf "$_paru_tmp"
   log "paru installed."
+fi
 
-# Disable Provides in system paru.conf and write user config
+info "Configuring paru (disabling provider prompts)..."
 sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
-  mkdir -p "$HOME/.config/paru"
+mkdir -p "$HOME/.config/paru"
 cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
 [options]
 SkipReview
 Provides = no
 PARUCONF
-fi
+log "paru configured."
+sleep 1
 
 # =============================================================================
 #  5. AUR packages
 # =============================================================================
-
-info "Installing AUR packages..."
+step 5 "Installing AUR packages"
+info "alass, faugus-launcher, vesktop, mecab, mpd tools, sddm theme..."
 paru -S --noconfirm --needed --skipreview --noprovides \
   alass \
   faugus-launcher \
   icoextract \
+  impd-git \
   mecab-git \
   mecab-ipadic \
   mecab-ipadic-neologd-git \
-  impd-git \
   mpdris-bin \
   mpdris2 \
   mpv-mpvacious \
@@ -203,11 +202,12 @@ paru -S --noconfirm --needed --skipreview --noprovides \
   vesktop
 
 log "AUR packages installed."
+sleep 1
 
 # =============================================================================
-#  6. fish — set as default shell
+#  6. fish — default shell
 # =============================================================================
-info "Setting fish as default shell..."
+step 6 "Setting fish as default shell"
 FISH_BIN=$(command -v fish)
 if ! grep -qF "$FISH_BIN" /etc/shells; then
   echo "$FISH_BIN" | sudo tee -a /etc/shells > /dev/null
@@ -218,10 +218,13 @@ if [[ "$SHELL" != "$FISH_BIN" ]]; then
 else
   warn "fish is already the default shell."
 fi
+sleep 1
 
 # =============================================================================
-#  7. fcitx5 environment variables
+#  7. Config files (fcitx5 + Elgato Wave 3)
 # =============================================================================
+step 7 "Writing config files"
+
 info "Writing fcitx5 environment variables..."
 FCITX5_ENV="$HOME/.config/environment.d/fcitx5.conf"
 mkdir -p "$(dirname "$FCITX5_ENV")"
@@ -232,66 +235,86 @@ XMODIFIERS=@im=fcitx
 SDL_IM_MODULE=fcitx
 GLFW_IM_MODULE=ibus
 EOF
-log "fcitx5 env vars written to $FCITX5_ENV"
+log "fcitx5 env vars written."
+
+info "Writing Elgato Wave 3 WirePlumber config..."
+mkdir -p "$HOME/.config/wireplumber/wireplumber.conf.d"
+cat > "$HOME/.config/wireplumber/wireplumber.conf.d/51-wave3.conf" <<'EOF'
+monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "~alsa_input.usb-Elgato_Systems_Elgato_Wave_3_*"
+      }
+    ]
+    actions = {
+      update-props = {
+        node.always-process = true
+      }
+    }
+  }
+]
+EOF
+log "Elgato Wave 3 config written."
+sleep 1
 
 # =============================================================================
-#  8. Flatpak — add Flathub remote
+#  8. Flatpak
 # =============================================================================
+step 8 "Setting up Flatpak + apps"
 info "Adding Flathub remote..."
 flatpak remote-add --if-not-exists flathub \
   https://dl.flathub.org/repo/flathub.flatpakrepo
+log "Flathub remote added."
 
-info "Installing Flatpak apps..."
+info "Installing Unity Hub..."
 flatpak install --system --noninteractive flathub com.unity.UnityHub
+info "Installing WiVRn server..."
 flatpak install --system --noninteractive flathub io.github.wivrn.wivrn
 log "Flatpak apps installed."
-log "Flathub remote added."
+sleep 1
 
 # =============================================================================
 #  9. chezmoi — dotfiles
 # =============================================================================
-info "Installing chezmoi..."
+step 9 "Applying dotfiles via chezmoi"
 sudo pacman -S --noconfirm --needed chezmoi
 
-if [[ -n "$CHEZMOI_REPO" ]]; then
-  info "Initialising chezmoi from: $CHEZMOI_REPO (branch: $CHEZMOI_BRANCH)"
-  chezmoi init --branch "$CHEZMOI_BRANCH" "$CHEZMOI_REPO"
+info "Initialising chezmoi from: $CHEZMOI_REPO (branch: $CHEZMOI_BRANCH)"
+chezmoi init --branch "$CHEZMOI_BRANCH" "$CHEZMOI_REPO"
 
-  echo -e "\n${YELLOW}[?]${RESET} Preview of changes chezmoi will apply:"
-  chezmoi diff || true
+echo -e "\n${YELLOW}[?]${RESET} Preview of changes chezmoi will apply:"
+chezmoi diff || true
 
-  read -rp $'\nApply dotfiles now? [y/N] ' _apply
-  if [[ "$_apply" =~ ^[Yy]$ ]]; then
-    chezmoi apply
-    fc-cache -fv
-    log "Dotfiles applied, font cache refreshed."
-  else
-    warn "Skipped — run 'chezmoi apply' whenever you're ready."
-  fi
+read -rp $'\nApply dotfiles now? [y/N] ' _apply
+if [[ "$_apply" =~ ^[Yy]$ ]]; then
+  chezmoi apply
+  fc-cache -fv
+  log "Dotfiles applied, font cache refreshed."
 else
-  warn "No repo provided — chezmoi installed but not initialised."
-  info "Run later: chezmoi init https://github.com/yourname/dotfiles"
+  warn "Skipped — run 'chezmoi apply' whenever you're ready."
 fi
+sleep 1
 
 # =============================================================================
-#  10. Enable system services
+#  10. System services
 # =============================================================================
-info "Enabling system services..."
+step 10 "Enabling system services"
 sudo systemctl enable NetworkManager
 sudo systemctl enable NetworkManager-dispatcher
 sudo systemctl enable sddm
 sudo systemctl enable systemd-timesyncd
-# NVIDIA suspend/resume hooks (you have these enabled)
 log "System services enabled."
 
 info "Enabling user services (pipewire, wireplumber)..."
-# These are user-session services, not system — enabled per-user only
 systemctl --user enable pipewire pipewire-pulse wireplumber
 log "User audio services enabled."
+sleep 1
 
 # =============================================================================
 #  11. XDG user dirs
 # =============================================================================
+step 11 "Finalising"
 xdg-user-dirs-update
 log "XDG user directories created."
 
@@ -303,8 +326,7 @@ echo -e "  ${BOLD}All done! Reboot when ready. 🎉${RESET}"
 echo -e "${BOLD}${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
 echo -e "  ${CYAN}Post-reboot checklist:${RESET}"
 echo -e "  • Open ${BOLD}fcitx5-configtool${RESET} → add Mozc as input method"
-echo -e "  • Run ${BOLD}chezmoi diff && chezmoi apply${RESET} to verify dotfiles"
 echo -e "  • Run ${BOLD}papirus-folders${RESET} to tint Papirus icons to your colour"
 echo -e "  • Steam → Settings → Compatibility → enable Proton for all titles"
-echo -e "  • ${BOLD}paru-debug${RESET} not auto-installed — add manually if needed:\n"
+echo -e "  • ${BOLD}paru-debug${RESET} not auto-installed — add manually if needed:"
 echo -e "      paru -S paru-debug\n"
