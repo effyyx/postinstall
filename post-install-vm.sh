@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  Arch Linux Post-Install Setup Script — VM VERSION (no NVIDIA)
+#  Arch Linux Post-Install Setup Script — VM VERSION (no NVIDIA) — gaming/lib32 included for full test
 #  Target: Minimal archinstall base → Hyprland + Quickshell + fish + chezmoi
 #  NOTE: Enable multilib in archinstall before running this script!
 #        archinstall → Additional repositories → multilib
@@ -46,6 +46,7 @@ sleep 2
 #  1. System update
 # =============================================================================
 step 1 "System update"
+sudo pacman -Sy --noconfirm
 sudo pacman -Syu --noconfirm
 log "System updated."
 sleep 1
@@ -96,6 +97,8 @@ sudo pacman -S --noconfirm --needed \
   gamemode lib32-gamemode \
   protontricks winetricks \
   vulkan-icd-loader lib32-vulkan-icd-loader \
+
+
   lib32-giflib lib32-gnutls lib32-gtk3 \
   lib32-libjpeg-turbo lib32-libpulse \
   lib32-libxcomposite lib32-libxslt \
