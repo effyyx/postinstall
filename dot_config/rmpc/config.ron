@@ -116,7 +116,7 @@
                     (
                         size: "100%",
                         borders: "ALL",
-                        border_style: (fg: "#d2bcfd"),
+                        border_style: (fg: "#fbb1d8"),
                         pane: Split(
                             direction: Horizontal,
                             panes: [
@@ -127,7 +127,7 @@
                                 (
                                     size: "30%",
                                     borders: "LEFT",
-                                    border_style: (fg: "#d2bcfd"),
+                                    border_style: (fg: "#fbb1d8"),
                                     pane: Split(
                                         direction: Vertical,
                                         panes: [
@@ -138,7 +138,7 @@
                                             (
                                                 size: "25%",
                                                 borders: "TOP",
-                                                border_style: (fg: "#d2bcfd"),
+                                                border_style: (fg: "#fbb1d8"),
                                                 pane: Pane(Lyrics),
                                             ),
                                         ],
@@ -174,7 +174,7 @@
                     (
                         size: "100%",
                         borders: "ALL",
-                        border_style: (fg: "#d2bcfd"),
+                        border_style: (fg: "#fbb1d8"),
                         pane: Split(
                             direction: Horizontal,
                             panes: [
@@ -185,7 +185,7 @@
                                 (
                                     size: "60%",
                                     borders: "LEFT",
-                                    border_style: (fg: "#d2bcfd"),
+                                    border_style: (fg: "#fbb1d8"),
                                     pane: Pane(Lyrics),
                                 ),
                             ],

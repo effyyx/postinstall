@@ -12,34 +12,34 @@ font-size = 12
 clipboard-read = allow
 clipboard-write = allow
 
-background = 141218
-foreground = e7e0e8
-cursor-color = d2bcfd
-cursor-text = 38265c
-selection-background = 4f3d74
-selection-foreground = eaddff
+background = 181115
+foreground = eddfe4
+cursor-color = fbb1d8
+cursor-text = 511d3e
+selection-background = 6b3455
+selection-foreground = ffd8ea
 
 # black / bright black
-palette = 0=141218
-palette = 8=3b383e
+palette = 0=181115
+palette = 8=40373b
 # red / bright red
 palette = 1=ffb4ab
 palette = 9=93000a
 # green / bright green (tertiary)
-palette = 2=f0b7c6
-palette = 10=643b46
+palette = 2=f3ba9c
+palette = 10=653d27
 # yellow / bright yellow (secondary)
-palette = 3=cdc2db
-palette = 11=e9def8
+palette = 3=dfbecd
+palette = 11=fcd9e9
 # blue / bright blue (primary container)
-palette = 4=4f3d74
-palette = 12=d2bcfd
+palette = 4=6b3455
+palette = 12=fbb1d8
 # magenta / bright magenta
-palette = 5=67548e
-palette = 13=d2bcfd
+palette = 5=874b6e
+palette = 13=fbb1d8
 # cyan / bright cyan
-palette = 6=f0b7c6
-palette = 14=ffd9e1
+palette = 6=f3ba9c
+palette = 14=ffdbca
 # white / bright white
-palette = 7=cbc4cf
-palette = 15=e7e0e8
+palette = 7=d3c2c9
+palette = 15=eddfe4

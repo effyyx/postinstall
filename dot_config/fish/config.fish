@@ -20,3 +20,4 @@ end
 
 set -U fish_greeting
 starship init fish | source
+set -gx EDITOR nvim

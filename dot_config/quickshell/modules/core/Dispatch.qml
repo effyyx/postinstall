@@ -7,8 +7,7 @@ Singleton {
     id: root
 
     function run(cmd) {
-        dispatchProc.command = ["bash", "-c",
-            "hyprctl dispatch exec \"bash -c '" + cmd + "'\""]
+        dispatchProc.command = ["bash", "-c", "setsid bash -c " + JSON.stringify(cmd) + " &"]
         dispatchProc.running = true
     }
 

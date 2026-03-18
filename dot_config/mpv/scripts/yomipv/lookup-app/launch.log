@@ -1,4 +1,4 @@
---- Bash Startup Check: Fri Mar  6 06:14:49 PM EET 2026 ---
+--- Bash Startup Check: Wed Mar 18 02:34:55 PM EET 2026 ---
 Script Dir: /home/nemui/.config/mpv/scripts/yomipv/lookup-app
-MPV PID: 72766
+MPV PID: 1962127
 [ERROR] Lookup App binary not found at /home/nemui/.config/mpv/scripts/yomipv/lookup-app/node_modules/.bin/electron

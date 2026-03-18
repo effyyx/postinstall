@@ -1,12 +1,67 @@
 import "../core"
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
+import Quickshell.Io
 import Quickshell.Services.Mpris
 import QtQuick
 import QtQuick.Layouts
 
 Scope {
+    // ── shared niri workspace state (polled once, shared across all bars) ─
+    property var niriWorkspaces: ({})   // { "DP-1": [{idx,active},...], "DP-2": [...] }
+    property string niriFocusedOutput: ""
+
+    Process {
+        id: niriPollProc
+        command: ["bash", "-c", "niri msg workspaces"]
+        stdout: SplitParser {
+            splitMarker: ""
+            onRead: data => {
+                var lines = data.trim().split("\n")
+                var result = {}
+                var currentOutput = ""
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim()
+                    // Output "DP-1":
+                    var outMatch = line.match(/^Output "([^"]+)":/)
+                    if (outMatch) {
+                        currentOutput = outMatch[1]
+                        result[currentOutput] = []
+                        continue
+                    }
+                    // "  * 1    2" or "    1    2"
+                    if (currentOutput && line.length > 0) {
+                        var isFocused = line.startsWith("*")
+                        var clean = line.replace(/^\*\s*/, "").trim()
+                        var parts = clean.split(/\s+/)
+                        for (var j = 0; j < parts.length; j++) {
+                            var idx = parseInt(parts[j])
+                            if (!isNaN(idx)) {
+                                var isActive = (j === 0 && isFocused) || line.indexOf("* " + parts[j]) !== -1
+                                // active workspace is marked with *
+                                result[currentOutput].push({
+                                    idx: idx,
+                                    active: isFocused && j === 0
+                                })
+                            }
+                        }
+                        if (isFocused) niriFocusedOutput = currentOutput
+                    }
+                }
+                niriWorkspaces = result
+            }
+        }
+    }
+
+    // Poll on startup and every 500ms via event stream trigger
+    Timer {
+        interval: 500
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: niriPollProc.running = true
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -19,6 +74,8 @@ Scope {
             anchors { top: true; left: true; right: true }
             implicitHeight: 32
             color: "transparent"
+
+            property string screenName: bar.screen ? bar.screen.name : ""
 
             property MprisPlayer mprisPlayer: {
                 var players = Mpris.players.values
@@ -34,24 +91,14 @@ Scope {
 
             readonly property var wsLabels: ["一","二","三","四","五","六","七","八","九","十"]
 
-            function wsToKanji(id) {
-                return id >= 1 && id <= 10 ? wsLabels[id - 1] : id.toString()
+            function wsToKanji(idx) {
+                return idx >= 1 && idx <= 10 ? wsLabels[idx - 1] : idx.toString()
             }
 
-            // ── live workspace data from Hyprland IPC ─────────────────────
             property var screenWorkspaces: {
-                var monitorName = bar.screen ? bar.screen.name : ""
-                var result = []
-                for (var i = 0; i < Hyprland.workspaces.values.length; i++) {
-                    var ws = Hyprland.workspaces.values[i]
-                    if (ws.monitor && ws.monitor.name === monitorName)
-                        result.push(ws)
-                }
-                result.sort(function(a, b) { return a.id - b.id })
-                return result
+                var ws = niriWorkspaces[bar.screenName] || []
+                return ws.slice(0, ws.length - 1)
             }
-
-            property var activeWs: Hyprland.focusedMonitor ? Hyprland.focusedMonitor.activeWorkspace : null
 
             Rectangle {
                 anchors.fill: parent
@@ -82,12 +129,12 @@ Scope {
                                 width: wsLabel.implicitWidth
                                 height: bar.implicitHeight
 
-                                property bool isActive: bar.activeWs && modelData.id === bar.activeWs.id
+                                property bool isActive: modelData.active
 
                                 Text {
                                     id: wsLabel
                                     anchors.centerIn: parent
-                                    text: bar.wsToKanji(modelData.id)
+                                    text: bar.wsToKanji(modelData.idx)
                                     color: isActive ? WallpaperManager.walColor5 : WallpaperManager.walColor8
                                     opacity: isActive ? 1.0 : 0.5
                                     font.pixelSize: 14
@@ -108,7 +155,11 @@ Scope {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: modelData.activate()
+                                    onClicked: {
+                                        var proc = Qt.createQmlObject('import Quickshell.Io; Process {}', bar)
+                                        proc.command = ["niri", "msg", "action", "focus-workspace", modelData.idx.toString()]
+                                        proc.running = true
+                                    }
                                 }
                             }
                         }
@@ -210,7 +261,6 @@ Scope {
                     clockText.text = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0')
                 }
             }
-
         }
     }
 }

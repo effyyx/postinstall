@@ -51,3 +51,8 @@ output_path = "~/.config/mpv/script-opts/mfpbar.conf"
 input_path = '~/.config/matugen/templates/ghostty-colors'
 output_path = '~/.config/ghostty/config'
 post_hook = 'pkill -USR2 ghostty'
+
+[templates.niri]
+input_path = "~/.config/matugen/templates/niri-colors.kdl"
+output_path = "~/.config/niri/colors.kdl"
+post_hook = "niri msg action reload-config"
