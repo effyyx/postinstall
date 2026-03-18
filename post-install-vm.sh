@@ -106,6 +106,7 @@ sudo pacman -S --noconfirm --needed \
   thunar-shares-plugin thunar-volman \
   \
   firefox \
+  anki \
   mpv imv \
   filezilla \
   \
@@ -151,6 +152,15 @@ log "Cargo packages installed."
 # =============================================================================
 if command -v paru &>/dev/null; then
   warn "paru already installed, skipping build."
+
+# Disable Provides in system paru.conf and write user config
+sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
+  mkdir -p "$HOME/.config/paru"
+cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
+[options]
+SkipReview
+Provides = disabled
+PARUCONF
 else
   info "Building paru from AUR..."
   _paru_tmp=$(mktemp -d)
@@ -158,6 +168,15 @@ else
   (cd "$_paru_tmp/paru" && makepkg -si --noconfirm)
   rm -rf "$_paru_tmp"
   log "paru installed."
+
+# Disable Provides in system paru.conf and write user config
+sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
+  mkdir -p "$HOME/.config/paru"
+cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
+[options]
+SkipReview
+Provides = disabled
+PARUCONF
 fi
 
 # =============================================================================
@@ -166,7 +185,6 @@ fi
 info "Installing AUR packages..."
 paru -S --noconfirm --needed --skipreview --noprovides \
   alass \
-  anki-bin \
   faugus-launcher \
   icoextract \
   impd-git \
