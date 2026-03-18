@@ -159,7 +159,7 @@ sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
 cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
 [options]
 SkipReview
-Provides = disabled
+Provides = no
 PARUCONF
 else
   info "Building paru from AUR..."
@@ -175,7 +175,7 @@ sudo sed -i 's/^Provides/# Provides/' /etc/paru.conf
 cat > "$HOME/.config/paru/paru.conf" <<'PARUCONF'
 [options]
 SkipReview
-Provides = disabled
+Provides = no
 PARUCONF
 fi
 
